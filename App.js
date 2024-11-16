@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, SafeAreaView, KeyboardAvoidingView, Platform, Image } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, SafeAreaView, KeyboardAvoidingView, Platform, Image, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StatusBar } from 'expo-status-bar';
 import { initDatabase, registerUser, loginUser } from './utils/database';
@@ -108,7 +108,7 @@ export default function App() {
     if (isLoggedIn) {
         return (
             <SafeAreaView style={styles.container}>
-                <View style={styles.loggedInContainer}>
+                <ScrollView contentContainerStyle={styles.loggedInContainer}>
                     <Image
                         source={{ uri: userProfile?.profilePicture || 'https://placekitten.com/200/200' }}
                         style={styles.avatar}
@@ -174,7 +174,7 @@ export default function App() {
                     <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
                         <Text style={styles.buttonText}>Logout</Text>
                     </TouchableOpacity>
-                </View>
+                </ScrollView>
             </SafeAreaView>
         );
     }
@@ -182,7 +182,7 @@ export default function App() {
     return (
         <SafeAreaView style={styles.container}>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.keyboardView}>
-                <View style={styles.formContainer}>
+                <ScrollView contentContainerStyle={styles.formContainer}>
                     <Image source={require('./assets/icon.png')} style={styles.logo} />
                     <Text style={styles.title}>{isLogin ? 'Welcome Back!' : 'Create Account'}</Text>
                     <Text style={styles.subtitle}>
@@ -266,7 +266,7 @@ export default function App() {
                             {isLogin ? 'New user? Create an account' : 'Already have an account? Sign in'}
                         </Text>
                     </TouchableOpacity>
-                </View>
+                </ScrollView>
             </KeyboardAvoidingView>
             <StatusBar style="auto" />
         </SafeAreaView>
@@ -276,7 +276,8 @@ export default function App() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f5f6fa',
+        backgroundColor: '#f4f7fa',
+        paddingTop: Platform.OS === 'ios' ? 30 : 0, // Avoid iOS status bar overlap
     },
     keyboardView: {
         flex: 1,
@@ -285,50 +286,59 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingHorizontal: 30,
+        paddingHorizontal: 20,
+        paddingVertical: 40,
     },
     logo: {
-        width: 120,
-        height: 120,
+        width: 140,
+        height: 140,
         marginBottom: 20,
         resizeMode: 'contain',
     },
     title: {
         fontSize: 32,
-        fontWeight: '600',
-        color: '#2f3640',
-        marginBottom: 20,
+        fontWeight: 'bold',
+        color: '#2d3436',
+        marginBottom: 10,
         textAlign: 'center',
     },
     subtitle: {
         fontSize: 16,
-        color: '#7f8c8d',
-        marginBottom: 30,
+        color: '#636e72',
+        marginBottom: 40,
         textAlign: 'center',
+        fontWeight: '500',
     },
     inputContainer: {
         width: '100%',
         marginBottom: 20,
     },
     input: {
-        backgroundColor: '#fff',
+        backgroundColor: '#ffffff',
         width: '100%',
         height: 50,
         borderRadius: 12,
         marginBottom: 14,
         paddingHorizontal: 18,
         fontSize: 16,
-        borderColor: '#dcdde1',
-        borderWidth: 1,
+        borderColor: '#b2bec3',
+        borderWidth: 1.5,
+        color: '#2d3436',
+        transition: '0.3s',
+    },
+    inputFocused: {
+        borderColor: '#0984e3', // Color when input is focused
+        boxShadow: '0 4px 8px rgba(9, 132, 227, 0.2)',
     },
     mainButton: {
-        backgroundColor: '#4cd137',
+        backgroundColor: '#0984e3',
         width: '100%',
         height: 50,
         borderRadius: 12,
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 18,
+        elevation: 5, // Added shadow for elevation
     },
     buttonText: {
         color: '#fff',
@@ -339,7 +349,7 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     switchText: {
-        color: '#4cd137',
+        color: '#0984e3',
         fontSize: 14,
         fontWeight: '600',
     },
@@ -348,18 +358,27 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         padding: 30,
+        backgroundColor: '#ffffff',
+        borderRadius: 15,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
+        elevation: 5,
     },
     welcomeTitle: {
-        fontSize: 24,
-        fontWeight: '600',
-        color: '#2f3640',
+        fontSize: 26,
+        fontWeight: 'bold',
+        color: '#2d3436',
         marginBottom: 30,
+        textAlign: 'center',
     },
     avatar: {
         width: 120,
         height: 120,
         borderRadius: 60,
         marginBottom: 20,
+        borderWidth: 2,
+        borderColor: '#0984e3', // Border around avatar
     },
     logoutButton: {
         backgroundColor: '#e74c3c',
@@ -369,13 +388,41 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 20,
+        elevation: 5,
     },
     profileDetails: {
         alignItems: 'center',
+        marginBottom: 20,
     },
     profileText: {
         fontSize: 16,
-        color: '#2f3640',
+        color: '#2d3436',
         marginBottom: 8,
+        fontWeight: '500',
+    },
+    profileSectionTitle: {
+        fontSize: 20,
+        fontWeight: '600',
+        color: '#0984e3',
+        marginBottom: 15,
+    },
+    inputEditText: {
+        fontSize: 16,
+        color: '#636e72',
+        fontWeight: '500',
+    },
+    editProfileButton: {
+        backgroundColor: '#0984e3',
+        width: '100%',
+        height: 45,
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 15,
+    },
+    editProfileButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
     },
 });
